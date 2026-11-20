@@ -46,3 +46,27 @@ const dataSources = [
     url: "https://climateknowledgeportal.worldbank.org/node/3511"
   }
 ];
+
+// STEP 3: Monthly rainfall (national average)
+const rainfallInfo = {
+  title: "Average monthly rainfall in Rwanda",
+  period: "1991-2020",
+  unit: "mm",
+  source: "World Bank Climate Change Knowledge Portal, Climatology (CRU), observed data from the Climatic Research Unit, University of East Anglia",
+  sourceUrl: "https://climateknowledgeportal.worldbank.org/country/rwanda/climate-data-historical"
+};
+
+const monthlyRainfall = [
+  { month: "Jan", mm: 115.06 },
+  { month: "Feb", mm: 94.99 },
+  { month: "Mar", mm: 137.45 },
+  { month: "Apr", mm: 142.70 },
+  { month: "May", mm: 117.75 },
+  { month: "Jun", mm: 30.30 },
+  { month: "Jul", mm: 14.58 },
+  { month: "Aug", mm: 37.09 },
+  { month: "Sep", mm: 94.40 },
+  { month: "Oct", mm: 130.82 },
+  { month: "Nov", mm: 148.48 },
+  { month: "Dec", mm: 118.54 }
+];
