@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An educational dashboard about Rwanda's seasons, rainfall, thunderstorms and weather-related hazards.">
+  <title>Rwanda Weather Dashboard</title>
+  <style>
+    :root {
+      --navy: #102b4e;
+      --blue: #1769aa;
+      --sky: #eaf5ff;
+      --teal: #0e8b8b;
+      --ink: #183047;
+      --muted: #60758a;
+      --paper: #f4f7fb;
+      --white: #ffffff;
+      --line: #e2eaf2;
+      --shadow: 0 12px 30px rgba(16, 43, 78, .08);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.6;
+    }
+    a { color: var(--blue); }
+    .topbar {
+      color: white;
+      background: linear-gradient(120deg, #0b2342, #145b91 65%, #168a9a);
+      padding: 22px clamp(16px, 4vw, 52px) 18px;
+    }
+
+    .institution-logos {
+      max-width: 1250px;
+      margin: 0 auto 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+    .institution-logos img {
+      display: block;
+      object-fit: contain;
+      background: #fff;
+      border-radius: 8px;
+      padding: 6px;
+      box-shadow: 0 5px 16px rgba(0,0,0,.16);
+    }
+    .meteo-logo {
+      width: min(230px, 34%);
+      height: 105px;
+    }
+    .msar-banner {
+      width: min(720px, 64%);
+      height: 125px;
+    }
+    @media (max-width: 650px) {
+      .institution-logos {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .meteo-logo, .msar-banner {
+        width: min(100%, 520px);
+        height: auto;
+        max-height: 115px;
+      }
+    }
+    .brand-row {
+      max-width: 1250px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(100px, 170px) 1fr minmax(100px, 170px);
+      align-items: center;
+      gap: clamp(12px, 3vw, 34px);
+    }
+    .brand-logo {
+      width: 100%;
+      height: 105px;
+      object-fit: contain;
+      background: white;
+      border-radius: 14px;
+      padding: 7px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.15);
+    }
+    .msar-logo { border-radius: 50%; max-width: 112px; justify-self: end; }
+    .brand-title { text-align: center; }
+    .brand-title .eyebrow {
+      margin: 0 0 3px;
+      color: #bfe8f5;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .brand-title h1 {
+      margin: 0;
+      font-size: clamp(1.55rem, 3.6vw, 2.7rem);
+      line-height: 1.15;
+      letter-spacing: -.04em;
+    }
+    .brand-title p { margin: 8px 0 0; color: #e1f1fb; font-size: .96rem; }
+    .brand-note { max-width: 1250px; margin: 15px auto 0; text-align: center; color: #d4e9f6; font-size: .78rem; }
+    .nav-wrap { background: white; border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 20; }
+    nav { max-width: 1250px; margin: auto; padding: 0 18px; display: flex; gap: 6px; overflow-x: auto; }
+    nav a { display: inline-block; padding: 14px 15px; color: #38536c; text-decoration: none; font-weight: 650; font-size: .9rem; white-space: nowrap; border-bottom: 3px solid transparent; }
+    nav a:hover, nav a:focus { color: var(--blue); border-bottom-color: var(--blue); }
+    main { max-width: 1250px; margin: 30px auto; padding: 0 20px; }
+    .welcome {
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 18px;
+      margin-bottom: 22px;
+    }
+    .welcome h2 { margin: 0; font-size: clamp(1.45rem, 3vw, 2rem); color: var(--navy); }
+    .welcome p { margin: 5px 0 0; color: var(--muted); }
+    .date-chip { background: white; border: 1px solid var(--line); padding: 9px 13px; border-radius: 999px; color: var(--muted); font-size: .83rem; white-space: nowrap; }
+    .notice { border: 1px solid #c8e3f6; border-left: 5px solid var(--blue); background: #eff8ff; padding: 13px 16px; border-radius: 12px; margin: 0 0 22px; color: #244c6c; font-size: .9rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 26px; }
+    .stat-card, .panel, .season-card { background: white; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .stat-card { padding: 19px; min-height: 142px; }
+    .stat-top { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: .83rem; font-weight: 650; }
+    .stat-icon { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: var(--sky); font-size: 1.2rem; }
+    .stat-card h3 { margin: 13px 0 1px; color: var(--navy); font-size: 1.3rem; }
+    .stat-card p { margin: 0; color: var(--muted); font-size: .8rem; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 15px; margin: 34px 0 15px; }
+    .section-heading h2 { margin: 0; color: var(--navy); font-size: 1.35rem; }
+    .section-heading p { margin: 3px 0 0; color: var(--muted); font-size: .88rem; }
+    .search-box { width: min(100%, 280px); padding: 11px 13px; border: 1px solid #ccd9e5; border-radius: 11px; font: inherit; background: white; }
+    .season-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+    .season-card { padding: 19px; box-shadow: none; transition: transform .2s, box-shadow .2s; }
+    .season-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+    .season-icon { font-size: 1.8rem; }
+    .season-card h3 { margin: 7px 0 4px; color: var(--navy); font-size: 1.04rem; }
+    .months { color: var(--blue); font-weight: 700; font-size: .85rem; }
+    .season-card p { color: var(--muted); font-size: .86rem; min-height: 48px; }
+    .tag { display: inline-block; padding: 4px 9px; border-radius: 999px; background: #edf5fb; color: #315b7b; font-size: .74rem; font-weight: 700; }
+    button { font: inherit; cursor: pointer; }
+    .primary-btn, .small-btn { border: 0; border-radius: 10px; background: var(--blue); color: white; padding: 10px 14px; font-weight: 700; }
+    .primary-btn:hover, .small-btn:hover { background: #0e4f83; }
+    .small-btn { margin-top: 12px; padding: 8px 11px; font-size: .82rem; }
+    .details-panel { display: none; margin-top: 16px; padding: 21px; border-radius: 15px; background: #eaf5ff; border: 1px solid #c8e3f6; }
+    .details-panel.open { display: block; }
+    .details-panel h3 { margin: 0 0 8px; color: var(--navy); }
+    .details-panel p { margin: 7px 0; }
+    .two-col { display: grid; grid-template-columns: 1.15fr .85fr; gap: 18px; margin-top: 18px; }
+    .panel { padding: 22px; }
+    .panel h3 { margin: 0 0 6px; color: var(--navy); }
+    .panel-intro { margin: 0 0 18px; color: var(--muted); font-size: .88rem; }
+    .rain-row { margin: 17px 0; }
+    .rain-label { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 7px; font-size: .87rem; font-weight: 650; }
+    .rain-track { height: 12px; background: #e7eef5; border-radius: 20px; overflow: hidden; }
+    .rain-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, #55b8d7, #1769aa); }
+    .rain-fill.high { width: 92%; } .rain-fill.moderate { width: 66%; } .rain-fill.low { width: 22%; } .rain-fill.lower { width: 14%; }
+    .fine-print { color: var(--muted); font-size: .78rem; }
+    .answer-list { margin: 12px 0 0; padding-left: 20px; }
+    .answer-list li { margin: 8px 0; }
+    .hazard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .hazard { padding: 17px; border-radius: 14px; background: #fff; border: 1px solid var(--line); }
+    .hazard h3 { margin: 5px 0; color: var(--navy); font-size: 1rem; }
+    .hazard p { margin: 0; color: var(--muted); font-size: .85rem; }
+    .safety-box { margin-top: 17px; padding: 18px; border-radius: 14px; background: #fff8e8; border: 1px solid #f3dfad; }
+    .safety-box h3 { margin: 0 0 7px; color: #805a12; }
+    .sources { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
+    .source-link { display: block; padding: 16px; background: white; border: 1px solid var(--line); border-radius: 13px; text-decoration: none; color: var(--ink); }
+    .source-link strong { display: block; color: var(--blue); margin-bottom: 4px; }
+    .source-link span { font-size: .82rem; color: var(--muted); }
+    footer { margin-top: 42px; background: #0b2342; color: #d8e8f5; padding: 25px 20px; text-align: center; font-size: .85rem; }
+    footer p { margin: 4px; }
+    .back-top { color: #fff; }
+    .empty-message { display: none; color: var(--muted); padding: 16px; }
+    @media (max-width: 950px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .season-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 700px) {
+      .brand-row { grid-template-columns: 76px 1fr 76px; gap: 9px; }
+      .brand-logo { height: 68px; padding: 4px; border-radius: 10px; }
+      .msar-logo { max-width: 76px; }
+      .brand-title .eyebrow { font-size: .58rem; letter-spacing: .08em; }
+      .brand-title p { font-size: .75rem; }
+      .welcome { display: block; }
+      .date-chip { display: inline-block; margin-top: 12px; }
+      .two-col { grid-template-columns: 1fr; }
+      .hazard-grid, .sources { grid-template-columns: 1fr; }
+      .section-heading { align-items: stretch; flex-direction: column; }
+      .search-box { width: 100%; }
+    }
+    @media (max-width: 430px) { .season-grid { grid-template-columns: 1fr; } .stats-grid { gap: 10px; } .stat-card { padding: 14px; } }
+  </style>
+</head>
+<body>
+  <header class="topbar" id="home">
+    <div class="institution-logos" aria-label="Project and institution logos">
+      <img class="meteo-logo" src="images/meteo-rwanda.png" alt="Rwanda Meteorology Agency logo">
+      <img class="msar-banner" src="images/msar-banner.png" alt="MSAR Maths and Stats Students Rwanda banner">
+    </div>
+    <div class="brand-title">
+      <p class="eyebrow">Weather and climate awareness</p>
+      <h1>RWANDA SEASONS, RAINFALL &amp; DISASTER DASHBOARD</h1>
+      <p>National climate analysis · Seasonal rainfall · Weather-related disasters</p>
+    </div>
+  </header>
+
+  <div class="nav-wrap">
+    <nav aria-label="Main navigation">
+      <a href="#home">Dashboard</a>
+      <a href="#seasons">Four seasons</a>
+      <a href="#rainfall">Rainfall</a>
+      <a href="#hazards">Weather hazards</a>
+      <a href="#safety">Safety tips</a>
+      <a href="#sources">Official sources</a>
+    </nav>
+  </div>
+
+  <main>
+    <section class="welcome">
+      <div>
+        <h2>Welcome to the Rwanda Weather Dashboard</h2>
+        <p>An educational overview of Rwanda's seasonal weather patterns.</p>
+      </div>
+      <div class="date-chip" id="today">Today's date</div>
+    </section>
+
+    <div class="notice"><strong>Important:</strong> This is an educational seasonal overview, not a live weather forecast or emergency alert service. Weather conditions vary by district and from year to year. Check Meteo Rwanda for current forecasts and official warnings.</div>
+
+    <section class="stats-grid" aria-label="Weather overview">
+      <article class="stat-card"><div class="stat-top"><span>Main rainy periods</span><span class="stat-icon">🌧️</span></div><h3>2 seasons</h3><p>Long rains and short rains</p></article>
+      <article class="stat-card"><div class="stat-top"><span>Main dry periods</span><span class="stat-icon">☀️</span></div><h3>2 seasons</h3><p>Long dry and short dry</p></article>
+      <article class="stat-card"><div class="stat-top"><span>Common rain hazards</span><span class="stat-icon">⚠️</span></div><h3>Floods & landslides</h3><p>Risk can rise during intense rainfall</p></article>
+      <article class="stat-card"><div class="stat-top"><span>Official weather source</span><span class="stat-icon">🌍</span></div><h3>Meteo Rwanda</h3><p>Forecasts, observations and warnings</p></article>
+    </section>
+
+    <section id="seasons">
+      <div class="section-heading">
+        <div><h2>The four seasonal periods</h2><p>Select a season to read its typical conditions.</p></div>
+        <input class="search-box" id="seasonSearch" type="search" placeholder="Search a season or month…" aria-label="Search seasons">
+      </div>
+      <div class="season-grid" id="seasonGrid">
+        <article class="season-card" data-search="long rainy march april may heavy rainfall thunderstorms">
+          <div class="season-icon">🌧️</div><h3>Long rainy season</h3><div class="months">March – May</div>
+          <p>Generally the wettest seasonal period, with frequent rain and possible thunderstorms.</p><span class="tag">Higher rainfall</span><br>
+          <button class="small-btn" data-season="longRain">Explore season</button>
+        </article>
+        <article class="season-card" data-search="long dry june july august drought lower rainfall">
+          <div class="season-icon">☀️</div><h3>Long dry season</h3><div class="months">June – August</div>
+          <p>Usually drier, with lower rainfall than the main rainy periods.</p><span class="tag">Lower rainfall</span><br>
+          <button class="small-btn" data-season="longDry">Explore season</button>
+        </article>
+        <article class="season-card" data-search="short rainy september october november december rain storms">
+          <div class="season-icon">⛈️</div><h3>Short rainy season</h3><div class="months">September – December</div>
+          <p>A second rainy period. Rain and thunderstorms can occur, with local variation.</p><span class="tag">Moderate to high rainfall</span><br>
+          <button class="small-btn" data-season="shortRain">Explore season</button>
+        </article>
+        <article class="season-card" data-search="short dry january february dry rainfall">
+          <div class="season-icon">🌤️</div><h3>Short dry season</h3><div class="months">January – February</div>
+          <p>Generally a relatively drier period between the two main rainy seasons.</p><span class="tag">Lower rainfall</span><br>
+          <button class="small-btn" data-season="shortDry">Explore season</button>
+        </article>
+      </div>
+      <p class="empty-message" id="noResults">No matching season found. Try another word or month.</p>
+      <div class="details-panel" id="seasonDetails" aria-live="polite"></div>
+    </section>
+
+    <section class="two-col" id="rainfall">
+      <article class="panel">
+        <h3>Typical rainfall pattern</h3>
+        <p class="panel-intro">A qualitative comparison of the usual seasonal pattern—not measured rainfall totals.</p>
+        <div class="rain-row"><div class="rain-label"><span>Long rainy season</span><span>Generally highest</span></div><div class="rain-track"><div class="rain-fill high"></div></div></div>
+        <div class="rain-row"><div class="rain-label"><span>Short rainy season</span><span>Rainy period</span></div><div class="rain-track"><div class="rain-fill moderate"></div></div></div>
+        <div class="rain-row"><div class="rain-label"><span>Short dry season</span><span>Generally lower</span></div><div class="rain-track"><div class="rain-fill low"></div></div></div>
+        <div class="rain-row"><div class="rain-label"><span>Long dry season</span><span>Generally lowest</span></div><div class="rain-track"><div class="rain-fill lower"></div></div></div>
+        <p class="fine-print">Bar lengths are visual illustrations only. They are not percentages, millimetres, or official observations.</p>
+      </article>
+      <article class="panel">
+        <h3>Quick answers</h3>
+        <p class="panel-intro">Answers to the main questions addressed by this project.</p>
+        <p><strong>Which season generally has the most rainfall?</strong></p>
+        <p>The long rainy season, usually March to May.</p>
+        <p><strong>When are thunderstorms more common?</strong></p>
+        <p>They are associated with rainy periods, especially the long and short rainy seasons. Frequency varies by place and year.</p>
+        <p><strong>When can weather-related disasters occur?</strong></p>
+        <p>Flooding and landslides can occur during intense rainfall in either rainy season. Local conditions matter.</p>
+      </article>
+    </section>
+
+    <section id="hazards">
+      <div class="section-heading"><div><h2>Weather-related hazards</h2><p>Heavy rainfall can contribute to several hazards.</p></div></div>
+      <div class="hazard-grid">
+        <article class="hazard"><div class="season-icon">🌊</div><h3>Flooding</h3><p>Intense rain can cause water to accumulate or overflow, especially in low-lying and poorly drained areas.</p></article>
+        <article class="hazard"><div class="season-icon">⛰️</div><h3>Landslides</h3><p>Prolonged or heavy rainfall can increase slope instability, particularly on steep or vulnerable land.</p></article>
+        <article class="hazard"><div class="season-icon">⚡</div><h3>Thunderstorms & lightning</h3><p>Storms may bring lightning, heavy downpours and strong winds. Follow official warnings.</p></article>
+      </div>
+      <div class="safety-box" id="safety">
+        <h3>Practical safety reminders</h3>
+        <ul class="answer-list">
+          <li>Pay attention to official weather alerts and local instructions.</li>
+          <li>During thunderstorms, move indoors and stay away from open areas and isolated tall objects.</li>
+          <li>Do not walk or drive through floodwater.</li>
+          <li>Avoid steep slopes and areas showing signs of ground movement after heavy rain.</li>
+          <li>In an emergency, follow guidance from local authorities and emergency services.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="sources">
+      <div class="section-heading"><div><h2>Official information sources</h2><p>Use these institutions for verified updates and detailed information.</p></div></div>
+      <div class="sources">
+        <a class="source-link" href="https://www.meteorwanda.gov.rw/" target="_blank" rel="noopener noreferrer"><strong>Rwanda Meteorology Agency</strong><span>Weather forecasts, climate information and official weather warnings.</span></a>
+        <a class="source-link" href="https://www.minema.gov.rw/" target="_blank" rel="noopener noreferrer"><strong>MINEMA</strong><span>Emergency management and disaster preparedness information.</span></a>
+        <a class="source-link" href="https://www.rema.gov.rw/" target="_blank" rel="noopener noreferrer"><strong>REMA</strong><span>Environmental management and related information.</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>Rwanda Weather Dashboard</strong></p>
+    <p>Educational project about Rwanda's seasonal weather patterns.</p>
+    <p>METEO RWANDA and MSAR logos are displayed as supplied by the project user. Display does not imply institutional endorsement.</p>
+    <p><a class="back-top" href="#home">Back to top ↑</a></p>
+  </footer>
+
+  <script>
+    const seasonInformation = {
+      longRain: {
+        title: '🌧️ Long rainy season (March–May)',
+        rainfall: 'Generally the highest rainfall period in Rwanda.',
+        storms: 'Thunderstorms and lightning can occur during rain events.',
+        hazards: 'Intense rainfall may contribute to flooding, landslides and soil erosion in vulnerable locations.',
+        note: 'Seasonal timing and rainfall amounts can vary by district and year. Check Meteo Rwanda for current forecasts.'
+      },
+      longDry: {
+        title: '☀️ Long dry season (June–August)',
+        rainfall: 'Rainfall is generally lower than during the main rainy seasons.',
+        storms: 'Thunderstorms are generally less frequent than in rainy periods, but conditions can vary.',
+        hazards: 'Some areas may experience dry conditions and water stress. Do not assume every district has identical conditions.',
+        note: 'Use current local forecasts for decisions about farming, travel and water management.'
+      },
+      shortRain: {
+        title: '⛈️ Short rainy season (September–December)',
+        rainfall: 'A second main rainy period, with rainfall varying across the country.',
+        storms: 'Thunderstorms can occur during this rainy period.',
+        hazards: 'Heavy rainfall may contribute to flooding, landslides and erosion in exposed areas.',
+        note: 'The start, end and strength of this season can vary. Check official seasonal outlooks.'
+      },
+      shortDry: {
+        title: '🌤️ Short dry season (January–February)',
+        rainfall: 'Generally relatively drier than the two main rainy periods, though rain can still occur.',
+        storms: 'Thunderstorms are generally less frequent, but they are not impossible.',
+        hazards: 'Some locations may experience dry spells. Local conditions differ.',
+        note: 'These months are a broad seasonal guide, not a guarantee of dry weather.'
+      }
+    };
+
+    const details = document.getElementById('seasonDetails');
+    document.querySelectorAll('[data-season]').forEach(button => {
+      button.addEventListener('click', () => {
+        const item = seasonInformation[button.dataset.season];
+        details.innerHTML = `
+          <h3>${item.title}</h3>
+          <p><strong>Rainfall:</strong> ${item.rainfall}</p>
+          <p><strong>Thunderstorms:</strong> ${item.storms}</p>
+          <p><strong>Possible hazards:</strong> ${item.hazards}</p>
+          <p class="fine-print">${item.note}</p>
+        `;
+        details.classList.add('open');
+        details.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    });
+
+    const search = document.getElementById('seasonSearch');
+    const cards = [...document.querySelectorAll('.season-card')];
+    search.addEventListener('input', () => {
+      const query = search.value.trim().toLowerCase();
+      let visible = 0;
+      cards.forEach(card => {
+        const matches = card.dataset.search.includes(query);
+        card.hidden = !matches;
+        if (matches) visible++;
+      });
+      document.getElementById('noResults').style.display = visible ? 'none' : 'block';
+    });
+
+    document.getElementById('today').textContent = new Intl.DateTimeFormat('en-GB', {
+      weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+    }).format(new Date());
+  </script>
+</body>
+</html>
