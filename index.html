@@ -348,6 +348,86 @@
     }).join("");
   })();
 </script>
+<!-- RAINFALL CHART: reads data.js -->
+<section id="rainfall-chart" class="rc-section">
+  <style>
+    .rc-section { margin: 40px 0; }
+    .rc-section h2 { color: #102b4e; margin-bottom: 6px; }
+    .rc-sub { color: #60758a; margin: 0 0 18px; }
+    .rc-card { background: #ffffff; border-radius: 18px; padding: 24px 20px 18px; box-shadow: 0 12px 30px rgba(16,43,78,.08); }
+    .rc-facts { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
+    .rc-fact { background: #eaf5ff; color: #102b4e; border-radius: 999px; padding: 6px 14px; font-size: 14px; font-weight: 600; }
+    .rc-fact.dry { background: #fff6dd; color: #7a5600; }
+    .rc-chart { display: flex; gap: 6px; align-items: flex-end; padding-top: 26px; }
+    .rc-col { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; }
+    .rc-plot { width: 100%; height: 240px; display: flex; align-items: flex-end; justify-content: center; border-bottom: 2px solid #e2eaf2; }
+    .rc-bar { position: relative; width: 70%; max-width: 40px; background: #1769aa; border-radius: 8px 8px 0 0; transition: opacity .2s; }
+    .rc-bar.wet { background: #102b4e; }
+    .rc-bar.dry { background: #e0a100; }
+    .rc-col:hover .rc-bar { opacity: .75; }
+    .rc-val { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: 700; color: #183047; padding-bottom: 3px; }
+    .rc-mon { margin-top: 8px; font-size: 13px; font-weight: 600; color: #60758a; }
+    .rc-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; font-size: 13px; color: #60758a; }
+    .rc-dot { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+    .rc-source { margin: 14px 0 0; font-size: 13px; color: #60758a; }
+    .rc-source a { color: #1769aa; }
+    @media (max-width: 600px) {
+      .rc-chart { gap: 3px; }
+      .rc-val { font-size: 10px; }
+      .rc-mon { font-size: 11px; }
+      .rc-plot { height: 200px; }
+    }
+  </style>
+  <h2>Average monthly rainfall</h2>
+  <p class="rc-sub" id="rc-sub"></p>
+  <div class="rc-card">
+    <div class="rc-facts" id="rc-facts"></div>
+    <div class="rc-chart" id="rc-chart" role="img" aria-label="Bar chart of average monthly rainfall in Rwanda"></div>
+    <div class="rc-legend">
+      <span><i class="rc-dot" style="background:#102b4e"></i>Wettest month</span>
+      <span><i class="rc-dot" style="background:#1769aa"></i>Other months</span>
+      <span><i class="rc-dot" style="background:#e0a100"></i>Driest month</span>
+    </div>
+    <p class="rc-source" id="rc-source"></p>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var box = document.getElementById("rc-chart");
+    if (!box || typeof monthlyRainfall === "undefined") { return; }
+
+    var max = 0, wet = monthlyRainfall[0], dry = monthlyRainfall[0], total = 0;
+    monthlyRainfall.forEach(function (m) {
+      total += m.mm;
+      if (m.mm > max) { max = m.mm; }
+      if (m.mm > wet.mm) { wet = m; }
+      if (m.mm < dry.mm) { dry = m; }
+    });
+    var top = Math.ceil(max / 20) * 20;
+
+    box.innerHTML = monthlyRainfall.map(function (m) {
+      var h = (m.mm / top * 100).toFixed(1);
+      var cls = m === wet ? " wet" : (m === dry ? " dry" : "");
+      return '<div class="rc-col" title="' + m.month + ': ' + m.mm.toFixed(1) + ' mm">' +
+        '<div class="rc-plot"><div class="rc-bar' + cls + '" style="height:' + h + '%">' +
+        '<span class="rc-val">' + Math.round(m.mm) + '</span></div></div>' +
+        '<span class="rc-mon">' + m.month + '</span></div>';
+    }).join("");
+
+    document.getElementById("rc-sub").textContent =
+      "Rainfall in millimetres (mm) for each month, average of " + rainfallInfo.period + ". Hover over a bar to see the exact value.";
+
+    document.getElementById("rc-facts").innerHTML =
+      '<span class="rc-fact">Wettest: ' + wet.month + ' (' + wet.mm.toFixed(1) + ' mm)</span>' +
+      '<span class="rc-fact dry">Driest: ' + dry.month + ' (' + dry.mm.toFixed(1) + ' mm)</span>' +
+      '<span class="rc-fact">Yearly total: about ' + Math.round(total) + ' mm</span>';
+
+    document.getElementById("rc-source").innerHTML =
+      'Source: ' + rainfallInfo.source + '. Period: ' + rainfallInfo.period +
+      '. <a href="' + rainfallInfo.sourceUrl + '" target="_blank" rel="noopener">View source data</a>.';
+  })();
+</script>
 </main>
 
   <footer>
