@@ -428,7 +428,95 @@
       '. <a href="' + rainfallInfo.sourceUrl + '" target="_blank" rel="noopener">View source data</a>.';
   })();
 </script>
-</main>
+<!-- DASHBOARD UPGRADE: summary cards, season colors, section order -->
+<section id="summary-cards" class="sc-section">
+  <style>
+    .sc-section { margin: 30px 0; }
+    .sc-section h2 { color: #102b4e; margin: 0 0 14px; }
+    .sc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+    .sc-card { background: #ffffff; border-radius: 18px; padding: 18px 20px; box-shadow: 0 12px 30px rgba(16,43,78,.08); border-left: 5px solid #1769aa; }
+    .sc-card.navy { border-left-color: #102b4e; }
+    .sc-card.dry { border-left-color: #e0a100; }
+    .sc-label { margin: 0 0 6px; font-size: 13px; font-weight: 600; color: #60758a; }
+    .sc-value { margin: 0; font-size: 26px; font-weight: 800; color: #102b4e; }
+    .sc-note { margin: 6px 0 0; font-size: 13px; color: #60758a; }
+    .rc-chart .rc-bar.s-rainy { background: #1769aa; }
+    .rc-chart .rc-bar.s-dry { background: #e0a100; }
+    .rc-chart .rc-bar.wet { background: #102b4e; }
+    .rc-chart .rc-bar.dry { background: #9a6b00; }
+  </style>
+  <h2>Key rainfall facts</h2>
+  <div class="sc-grid" id="sc-grid"></div>
+</section>
+
+<script>
+  (function () {
+    if (typeof monthlyRainfall === "undefined" || typeof rwandaSeasons === "undefined") { return; }
+
+    // 1) Season type for each month, read from data.js
+    var typeOf = {};
+    rwandaSeasons.forEach(function (s) {
+      s.months.forEach(function (m) { typeOf[m.slice(0, 3)] = s.type; });
+    });
+
+    // 2) Color the bars by season
+    var bars = document.querySelectorAll("#rc-chart .rc-bar");
+    monthlyRainfall.forEach(function (m, i) {
+      if (bars[i]) { bars[i].classList.add(typeOf[m.month] === "dry" ? "s-dry" : "s-rainy"); }
+    });
+
+    // 3) New legend
+    var legend = document.querySelector("#rainfall-chart .rc-legend");
+    if (legend) {
+      legend.innerHTML =
+        '<span><i class="rc-dot" style="background:#1769aa"></i>Rainy-season month</span>' +
+        '<span><i class="rc-dot" style="background:#e0a100"></i>Dry-season month</span>' +
+        '<span><i class="rc-dot" style="background:#102b4e"></i>Wettest month</span>' +
+        '<span><i class="rc-dot" style="background:#9a6b00"></i>Driest month</span>';
+    }
+
+    // 4) Calculate the key facts
+    var total = 0, wet = monthlyRainfall[0], dry = monthlyRainfall[0];
+    monthlyRainfall.forEach(function (m) {
+      total += m.mm;
+      if (m.mm > wet.mm) { wet = m; }
+      if (m.mm < dry.mm) { dry = m; }
+    });
+    var bestSeason = null, bestSum = -1;
+    rwandaSeasons.forEach(function (s) {
+      var sum = 0;
+      monthlyRainfall.forEach(function (m) {
+        if (s.months.some(function (x) { return x.slice(0, 3) === m.month; })) { sum += m.mm; }
+      });
+      if (sum > bestSum) { bestSum = sum; bestSeason = s; }
+    });
+
+    function card(cls, label, value, note) {
+      return '<div class="sc-card ' + cls + '"><p class="sc-label">' + label + '</p>' +
+        '<p class="sc-value">' + value + '</p><p class="sc-note">' + note + '</p></div>';
+    }
+
+    document.getElementById("sc-grid").innerHTML =
+      card("navy", "Wettest month", wet.month + " &middot; " + wet.mm.toFixed(1) + " mm", "Average, " + rainfallInfo.period) +
+      card("dry", "Driest month", dry.month + " &middot; " + dry.mm.toFixed(1) + " mm", "Average, " + rainfallInfo.period) +
+      card("", "Wettest season", bestSeason.name, "About " + Math.round(bestSum) + " mm over 3 months (" + bestSeason.localName + ")") +
+      card("", "Yearly total", "About " + Math.round(total) + " mm", "Sum of the 12 monthly averages. The portal's annual figure is 1,170.2 mm.");
+
+    // 5) Put the sections in a better order
+    var welcome = document.querySelector(".welcome");
+    var summary = document.getElementById("summary-cards");
+    if (welcome && summary) { welcome.insertAdjacentElement("afterend", summary); }
+
+    var rain = document.getElementById("rainfall");
+    if (rain && rain.parentNode) {
+      ["data-seasons", "rainfall-chart"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) { rain.parentNode.insertBefore(el, rain); }
+      });
+    }
+  })();
+</script>
+  </main>
 
   <footer>
     <p><strong>Rwanda Weather Dashboard</strong></p>
