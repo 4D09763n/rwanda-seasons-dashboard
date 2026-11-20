@@ -310,7 +310,45 @@
         <a class="source-link" href="https://www.rema.gov.rw/" target="_blank" rel="noopener noreferrer"><strong>REMA</strong><span>Environmental management and related information.</span></a>
       </div>
     </section>
-  </main>
+ <!-- DATA SEASONS: reads data.js -->
+<section id="data-seasons" class="ds-section">
+  <style>
+    .ds-section { margin: 40px 0; }
+    .ds-section h2 { color: #102b4e; margin-bottom: 6px; }
+    .ds-sub { color: #60758a; margin: 0 0 18px; }
+    .ds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+    .ds-card { background: #ffffff; border-radius: 18px; padding: 20px; box-shadow: 0 12px 30px rgba(16,43,78,.08); border-top: 5px solid #1769aa; }
+    .ds-card.dry { border-top-color: #e0a100; }
+    .ds-card h3 { margin: 0 0 4px; color: #102b4e; }
+    .ds-local { color: #0e8b8b; font-weight: 600; margin: 0 0 10px; }
+    .ds-months { font-weight: 600; color: #183047; margin: 0 0 8px; }
+    .ds-note { color: #60758a; margin: 0; font-size: 14px; }
+    .ds-tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: #eaf5ff; color: #1769aa; margin-bottom: 10px; }
+    .ds-card.dry .ds-tag { background: #fff6dd; color: #9a6b00; }
+  </style>
+  <h2>Rwanda's four seasons</h2>
+  <p class="ds-sub">Loaded from our data file. Source: Meteo Rwanda and World Bank Climate Knowledge Portal.</p>
+  <div id="ds-grid" class="ds-grid"></div>
+</section>
+
+<script src="data.js"></script>
+<script>
+  (function () {
+    var grid = document.getElementById("ds-grid");
+    if (!grid || typeof rwandaSeasons === "undefined") { return; }
+    grid.innerHTML = rwandaSeasons.map(function (s) {
+      var label = s.type === "rainy" ? "Rainy" : "Dry";
+      return '<div class="ds-card ' + s.type + '">' +
+        '<span class="ds-tag">' + label + '</span>' +
+        '<h3>' + s.name + '</h3>' +
+        '<p class="ds-local">' + s.localName + '</p>' +
+        '<p class="ds-months">' + s.months.join(", ") + '</p>' +
+        '<p class="ds-note">' + s.note + '</p>' +
+        '</div>';
+    }).join("");
+  })();
+</script>
+</main>
 
   <footer>
     <p><strong>Rwanda Weather Dashboard</strong></p>
