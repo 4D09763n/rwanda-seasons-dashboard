@@ -186,18 +186,20 @@
       .search-box { width: 100%; }
     }
     @media (max-width: 430px) { .season-grid { grid-template-columns: 1fr; } .stats-grid { gap: 10px; } .stat-card { padding: 14px; } }
+    .institution-logos { justify-content: center; margin-bottom: 10px; }
+    .institution-logos img.msar-mark { width: 84px; height: 84px; background: none; padding: 0; box-shadow: none; border-radius: 50%; }
+    .brand-title p.edu-note { font-size: .78rem; color: #bfe8f5; margin-top: 6px; }
+    #answers { margin: 30px 0; }
   </style>
 </head>
 <body>
   <header class="topbar" id="home">
-    <div class="institution-logos" aria-label="Project and institution logos">
-      <img class="meteo-logo" src="meteo-rwanda.png" alt="Rwanda Meteorology Agency logo">
-      <img class="msar-banner" src="msar-banner.png" alt="MSAR Maths and Stats Students Rwanda banner">
-    </div>
+    <div class="institution-logos"><img class="msar-mark" src="msar-logo-transparent.png" alt="MSAR Maths and Stats Students Rwanda logo"></div>
     <div class="brand-title">
       <p class="eyebrow">Weather and climate awareness</p>
       <h1>RWANDA SEASONS, RAINFALL &amp; DISASTER DASHBOARD</h1>
       <p>National climate analysis · Seasonal rainfall · Weather-related disasters</p>
+      <p class="edu-note">Educational project by MSAR · Not an official website of Meteo Rwanda, MINEMA, REMA or the World Bank</p>
     </div>
   </header>
 
@@ -205,7 +207,7 @@
     <nav aria-label="Main navigation">
       <a href="#home">Dashboard</a>
       <a href="#seasons">Four seasons</a>
-      <a href="#rainfall">Rainfall</a>
+      <a href="#rainfall-chart">Rainfall</a>
       <a href="#hazards">Weather hazards</a>
       <a href="#safety">Safety tips</a>
       <a href="#sources">Official sources</a>
@@ -221,14 +223,7 @@
       <div class="date-chip" id="today">Today's date</div>
     </section>
 
-    <div class="notice"><strong>Important:</strong> This is an educational seasonal overview, not a live weather forecast or emergency alert service. Weather conditions vary by district and from year to year. Check Meteo Rwanda for current forecasts and official warnings.</div>
-
-    <section class="stats-grid" aria-label="Weather overview">
-      <article class="stat-card"><div class="stat-top"><span>Main rainy periods</span><span class="stat-icon">🌧️</span></div><h3>2 seasons</h3><p>Long rains and short rains</p></article>
-      <article class="stat-card"><div class="stat-top"><span>Main dry periods</span><span class="stat-icon">☀️</span></div><h3>2 seasons</h3><p>Long dry and short dry</p></article>
-      <article class="stat-card"><div class="stat-top"><span>Common rain hazards</span><span class="stat-icon">⚠️</span></div><h3>Floods & landslides</h3><p>Risk can rise during intense rainfall</p></article>
-      <article class="stat-card"><div class="stat-top"><span>Official weather source</span><span class="stat-icon">🌍</span></div><h3>Meteo Rwanda</h3><p>Forecasts, observations and warnings</p></article>
-    </section>
+    <div class="notice"><strong>Educational overview.</strong> Not a live forecast or emergency alert. For current forecasts and official warnings, visit Meteo Rwanda.</div>
 
     <section id="seasons">
       <div class="section-heading">
@@ -261,21 +256,12 @@
       <div class="details-panel" id="seasonDetails" aria-live="polite"></div>
     </section>
 
-    <section class="two-col" id="rainfall">
-      <article class="panel">
-        <h3>Typical rainfall pattern</h3>
-        <p class="panel-intro">A qualitative comparison of the usual seasonal pattern—not measured rainfall totals.</p>
-        <div class="rain-row"><div class="rain-label"><span>Long rainy season</span><span>Generally highest</span></div><div class="rain-track"><div class="rain-fill high"></div></div></div>
-        <div class="rain-row"><div class="rain-label"><span>Short rainy season</span><span>Rainy period</span></div><div class="rain-track"><div class="rain-fill moderate"></div></div></div>
-        <div class="rain-row"><div class="rain-label"><span>Short dry season</span><span>Generally lower</span></div><div class="rain-track"><div class="rain-fill low"></div></div></div>
-        <div class="rain-row"><div class="rain-label"><span>Long dry season</span><span>Generally lowest</span></div><div class="rain-track"><div class="rain-fill lower"></div></div></div>
-        <p class="fine-print">Bar lengths are visual illustrations only. They are not percentages, millimetres, or official observations.</p>
-      </article>
+    <section id="answers">
       <article class="panel">
         <h3>Quick answers</h3>
         <p class="panel-intro">Answers to the main questions addressed by this project.</p>
         <p><strong>Which season generally has the most rainfall?</strong></p>
-        <p>The long rainy season, usually March to May.</p>
+        <p>The long rainy season (March to May) has the highest average monthly rainfall. The single wettest month in the 1991-2020 data is November.</p>
         <p><strong>When are thunderstorms more common?</strong></p>
         <p>They are associated with rainy periods, especially the long and short rainy seasons. Frequency varies by place and year.</p>
         <p><strong>When can weather-related disasters occur?</strong></p>
@@ -303,51 +289,15 @@
     </section>
 
     <section id="sources">
-      <div class="section-heading"><div><h2>Official information sources</h2><p>Use these institutions for verified updates and detailed information.</p></div></div>
+      <div class="section-heading"><div><h2>Official information and data sources</h2><p>Use these institutions for verified updates. The rainfall data comes from the World Bank portal.</p></div></div>
       <div class="sources">
         <a class="source-link" href="https://www.meteorwanda.gov.rw/" target="_blank" rel="noopener noreferrer"><strong>Rwanda Meteorology Agency</strong><span>Weather forecasts, climate information and official weather warnings.</span></a>
         <a class="source-link" href="https://www.minema.gov.rw/" target="_blank" rel="noopener noreferrer"><strong>MINEMA</strong><span>Emergency management and disaster preparedness information.</span></a>
         <a class="source-link" href="https://www.rema.gov.rw/" target="_blank" rel="noopener noreferrer"><strong>REMA</strong><span>Environmental management and related information.</span></a>
+        <a class="source-link" href="https://climateknowledgeportal.worldbank.org/country/rwanda/climate-data-historical" target="_blank" rel="noopener noreferrer"><strong>World Bank Climate Change Knowledge Portal</strong><span>Source of the monthly rainfall data (CRU, 1991-2020).</span></a>
       </div>
     </section>
- <!-- DATA SEASONS: reads data.js -->
-<section id="data-seasons" class="ds-section">
-  <style>
-    .ds-section { margin: 40px 0; }
-    .ds-section h2 { color: #102b4e; margin-bottom: 6px; }
-    .ds-sub { color: #60758a; margin: 0 0 18px; }
-    .ds-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
-    .ds-card { background: #ffffff; border-radius: 18px; padding: 20px; box-shadow: 0 12px 30px rgba(16,43,78,.08); border-top: 5px solid #1769aa; }
-    .ds-card.dry { border-top-color: #e0a100; }
-    .ds-card h3 { margin: 0 0 4px; color: #102b4e; }
-    .ds-local { color: #0e8b8b; font-weight: 600; margin: 0 0 10px; }
-    .ds-months { font-weight: 600; color: #183047; margin: 0 0 8px; }
-    .ds-note { color: #60758a; margin: 0; font-size: 14px; }
-    .ds-tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: #eaf5ff; color: #1769aa; margin-bottom: 10px; }
-    .ds-card.dry .ds-tag { background: #fff6dd; color: #9a6b00; }
-  </style>
-  <h2>Rwanda's four seasons</h2>
-  <p class="ds-sub">Loaded from our data file. Source: Meteo Rwanda and World Bank Climate Knowledge Portal.</p>
-  <div id="ds-grid" class="ds-grid"></div>
-</section>
-
-<script src="data.js"></script>
-<script>
-  (function () {
-    var grid = document.getElementById("ds-grid");
-    if (!grid || typeof rwandaSeasons === "undefined") { return; }
-    grid.innerHTML = rwandaSeasons.map(function (s) {
-      var label = s.type === "rainy" ? "Rainy" : "Dry";
-      return '<div class="ds-card ' + s.type + '">' +
-        '<span class="ds-tag">' + label + '</span>' +
-        '<h3>' + s.name + '</h3>' +
-        '<p class="ds-local">' + s.localName + '</p>' +
-        '<p class="ds-months">' + s.months.join(", ") + '</p>' +
-        '<p class="ds-note">' + s.note + '</p>' +
-        '</div>';
-    }).join("");
-  })();
-</script>
+ <script src="data.js"></script>
 <!-- RAINFALL CHART: reads data.js -->
 <section id="rainfall-chart" class="rc-section">
   <style>
@@ -424,8 +374,8 @@
       '<span class="rc-fact">Yearly total: about ' + Math.round(total) + ' mm</span>';
 
     document.getElementById("rc-source").innerHTML =
-      'Source: ' + rainfallInfo.source + '. Period: ' + rainfallInfo.period +
-      '. <a href="' + rainfallInfo.sourceUrl + '" target="_blank" rel="noopener">View source data</a>.';
+      'Source: ' + rainfallInfo.source + '. Period: ' + rainfallInfo.period + '. Downloaded: ' + rainfallInfo.retrieved +
+      '. <a href="' + rainfallInfo.sourceUrl + '" target="_blank" rel="noopener">View source data</a> &middot; <a href="rwanda-monthly-rainfall-1991-2020.csv" download>Download the data (CSV)</a>.';
   })();
 </script>
 <!-- DASHBOARD UPGRADE: summary cards, season colors, section order -->
@@ -482,13 +432,14 @@
       if (m.mm > wet.mm) { wet = m; }
       if (m.mm < dry.mm) { dry = m; }
     });
-    var bestSeason = null, bestSum = -1;
+    var bestSeason = null, bestAvg = -1;
     rwandaSeasons.forEach(function (s) {
-      var sum = 0;
+      var sum = 0, n = 0;
       monthlyRainfall.forEach(function (m) {
-        if (s.months.some(function (x) { return x.slice(0, 3) === m.month; })) { sum += m.mm; }
+        if (s.months.some(function (x) { return x.slice(0, 3) === m.month; })) { sum += m.mm; n++; }
       });
-      if (sum > bestSum) { bestSum = sum; bestSeason = s; }
+      var avg = sum / n;
+      if (avg > bestAvg) { bestAvg = avg; bestSeason = s; }
     });
 
     function card(cls, label, value, note) {
@@ -499,7 +450,7 @@
     document.getElementById("sc-grid").innerHTML =
       card("navy", "Wettest month", wet.month + " &middot; " + wet.mm.toFixed(1) + " mm", "Average, " + rainfallInfo.period) +
       card("dry", "Driest month", dry.month + " &middot; " + dry.mm.toFixed(1) + " mm", "Average, " + rainfallInfo.period) +
-      card("", "Wettest season", bestSeason.name, "About " + Math.round(bestSum) + " mm over 3 months (" + bestSeason.localName + ")") +
+      card("", "Wettest season", bestSeason.name, "About " + Math.round(bestAvg) + " mm per month on average (" + bestSeason.localName + ")") +
       card("", "Yearly total", "About " + Math.round(total) + " mm", "Sum of the 12 monthly averages. The portal's annual figure is 1,170.2 mm.");
 
     // 5) Put the sections in a better order
@@ -507,7 +458,7 @@
     var summary = document.getElementById("summary-cards");
     if (welcome && summary) { welcome.insertAdjacentElement("afterend", summary); }
 
-    var rain = document.getElementById("rainfall");
+    var rain = document.getElementById("answers");
     if (rain && rain.parentNode) {
       ["data-seasons", "rainfall-chart"].forEach(function (id) {
         var el = document.getElementById(id);
@@ -521,7 +472,8 @@
   <footer>
     <p><strong>Rwanda Weather Dashboard</strong></p>
     <p>Educational project about Rwanda's seasonal weather patterns.</p>
-    <p>METEO RWANDA and MSAR logos are displayed as supplied by the project user. Display does not imply institutional endorsement.</p>
+    <p>Educational project by MSAR (Maths and Stats Students Rwanda). Not affiliated with or endorsed by Meteo Rwanda, MINEMA, REMA or the World Bank.</p>
+    <p>Rainfall data: World Bank Climate Change Knowledge Portal (CRU TS), 1991-2020, downloaded November 2026.</p>
     <p><a class="back-top" href="#home">Back to top ↑</a></p>
   </footer>
 
