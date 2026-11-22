@@ -656,5 +656,47 @@
       weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
     }).format(new Date());
   </script>
+<!-- SOFT FLUFFY CLOUDS IN THE HEADER -->
+<style>
+  .topbar { position: relative; overflow: hidden; }
+  .topbar > :not(.puff-sky) { position: relative; z-index: 1; }
+  .topbar > div.puff-sky { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .puff { position: absolute; left: -340px; animation: puffDrift linear infinite; filter: blur(1.5px); }
+  .puff svg { display: block; width: 100%; height: auto; }
+  @keyframes puffDrift { from { transform: translateX(0); } to { transform: translateX(calc(100vw + 700px)); } }
+  @media (prefers-reduced-motion: reduce) { .puff { animation: none; left: 12%; } }
+</style>
+<script>
+  (function () {
+    var SECONDS = 20;   // time for a cloud to cross the header: smaller = faster
+    var COUNT = 12;     // how many clouds
+
+    var header = document.querySelector(".topbar");
+    if (!header) { return; }
+    document.querySelectorAll(".sky, .cloud-sky, .puff-sky").forEach(function (el) { el.remove(); });   // removes earlier clouds
+
+    var CLOUD = '<svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg"><g fill="#ffffff">' +
+      '<ellipse cx="62" cy="62" rx="42" ry="26"/><ellipse cx="100" cy="44" rx="36" ry="32"/>' +
+      '<ellipse cx="140" cy="58" rx="44" ry="28"/><ellipse cx="100" cy="70" rx="78" ry="22"/></g></svg>';
+
+    var sky = document.createElement("div");
+    sky.className = "puff-sky";
+    sky.setAttribute("aria-hidden", "true");
+
+    for (var i = 0; i < COUNT; i++) {
+      var c = document.createElement("div");
+      var duration = SECONDS * (0.7 + ((i * 29) % 80) / 100);
+      c.className = "puff";
+      c.innerHTML = CLOUD;
+      c.style.top = ((i * 31) % 70) + "%";
+      c.style.width = (130 + (i * 47) % 190) + "px";
+      c.style.opacity = (0.35 + ((i * 17) % 40) / 100).toFixed(2);
+      c.style.animationDuration = duration.toFixed(1) + "s";
+      c.style.animationDelay = "-" + (duration * ((i * 0.618) % 1)).toFixed(1) + "s";
+      sky.appendChild(c);
+    }
+    header.insertBefore(sky, header.firstChild);
+  })();
+</script>
 </body>
 </html>
