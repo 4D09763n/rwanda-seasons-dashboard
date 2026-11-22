@@ -209,6 +209,28 @@
   @media (prefers-reduced-motion: reduce) { .cloud { animation: none; left: 12%; } }
 </style>
 <div class="sky" aria-hidden="true"><span class="cloud c1"></span><span class="cloud c2"></span><span class="cloud c3"></span></div> 
+  <!-- MORE CLOUDS -->
+<style>
+  .sky .cloud { background: rgba(255,255,255,.55); }
+</style>
+<script>
+  (function () {
+    var sky = document.querySelector(".sky");
+    if (!sky) { return; }
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { return; }
+    for (var i = 0; i < 10; i++) {
+      var c = document.createElement("span");
+      c.className = "cloud";
+      var duration = 30 + Math.random() * 60;            // 30 to 90 seconds
+      c.style.top = (4 + Math.random() * 76) + "%";      // different heights
+      c.style.scale = (0.6 + Math.random() * 1.1).toFixed(2);   // different sizes
+      c.style.opacity = (0.45 + Math.random() * 0.5).toFixed(2);
+      c.style.animationDuration = duration.toFixed(0) + "s";
+      c.style.animationDelay = "-" + (Math.random() * duration).toFixed(0) + "s";  // start spread out
+      sky.appendChild(c);
+    }
+  })();
+</script>
   <header class="topbar" id="home">
     <div class="institution-logos"><img class="msar-mark" src="msar-logo-transparent.png" alt="MSAR Maths and Stats Students Rwanda logo"></div>
     <div class="brand-title">
