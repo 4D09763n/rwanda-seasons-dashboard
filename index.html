@@ -202,7 +202,48 @@
       <p class="edu-note">Educational project by MSAR · Not an official website of Meteo Rwanda, MINEMA, REMA or the World Bank</p>
     </div>
   </header>
-
+<!-- RAINFALL FACTS TICKER -->
+<div class="ticker" aria-label="Rainfall facts">
+  <span class="ticker-label">Rainfall facts</span>
+  <div class="ticker-window"><div class="ticker-track" id="tickerTrack"></div></div>
+</div>
+<style>
+  .ticker { display: flex; align-items: stretch; background: #102b4e; color: #fff; font-size: .88rem; overflow: hidden; }
+  .ticker-label { flex: none; background: #1769aa; padding: 10px 16px; font-weight: 700; letter-spacing: .04em; white-space: nowrap; }
+  .ticker-window { flex: 1; overflow: hidden; display: flex; align-items: center; }
+  .ticker-track { display: inline-flex; white-space: nowrap; animation: tickerMove 60s linear infinite; }
+  .ticker:hover .ticker-track, .ticker:focus-within .ticker-track { animation-play-state: paused; }
+  .ticker-item { padding: 0 28px; }
+  .ticker-item::after { content: "\25C6"; margin-left: 28px; color: #55b8d7; font-size: .7em; }
+  @keyframes tickerMove { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } .ticker-window { overflow-x: auto; } }
+  @media (max-width: 600px) { .ticker { font-size: .8rem; } .ticker-label { padding: 8px 10px; } }
+</style>
+<script>
+  window.addEventListener("load", function () {
+    var track = document.getElementById("tickerTrack");
+    if (!track || typeof monthlyRainfall === "undefined") { return; }
+    var wet = monthlyRainfall[0], dry = monthlyRainfall[0];
+    monthlyRainfall.forEach(function (m) {
+      if (m.mm > wet.mm) { wet = m; }
+      if (m.mm < dry.mm) { dry = m; }
+    });
+    var facts = [
+      "Wettest month: " + wet.month + " (" + wet.mm.toFixed(1) + " mm)",
+      "Driest month: " + dry.month + " (" + dry.mm.toFixed(1) + " mm)"
+    ];
+    if (typeof rwandaSeasons !== "undefined") {
+      rwandaSeasons.forEach(function (s) {
+        facts.push(s.name + ": " + s.months[0] + " to " + s.months[s.months.length - 1]);
+      });
+    }
+    facts.push("Average of " + rainfallInfo.period + " (World Bank data)");
+    facts.push("Educational overview, not a live forecast");
+    facts.push("For official warnings, visit Meteo Rwanda");
+    var html = facts.map(function (f) { return '<span class="ticker-item">' + f + '</span>'; }).join("");
+    track.innerHTML = html + html + html + html;
+  });
+</script>
   <div class="nav-wrap">
     <nav aria-label="Main navigation">
       <a href="#home">Dashboard</a>
