@@ -193,6 +193,22 @@
   </style>
 </head>
 <body>
+<!-- MOVING CLOUDS -->
+<style>
+  .topbar { position: relative; overflow: hidden; }
+  .topbar > * { position: relative; z-index: 1; }
+  .topbar > .sky { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .cloud { position: absolute; left: -240px; width: 160px; height: 40px; background: rgba(255,255,255,.22); border-radius: 40px; animation: cloudMove linear infinite; }
+  .cloud::before, .cloud::after { content: ""; position: absolute; background: inherit; border-radius: 50%; }
+  .cloud::before { width: 70px; height: 70px; top: -32px; left: 22px; }
+  .cloud::after { width: 50px; height: 50px; top: -22px; left: 84px; }
+  .cloud.c1 { top: 14%; animation-duration: 70s; }
+  .cloud.c2 { top: 58%; scale: 1.5; opacity: .7; animation-duration: 110s; animation-delay: -45s; }
+  .cloud.c3 { top: 32%; scale: .8; animation-duration: 90s; animation-delay: -75s; }
+  @keyframes cloudMove { from { transform: translateX(0); } to { transform: translateX(calc(100vw + 520px)); } }
+  @media (prefers-reduced-motion: reduce) { .cloud { animation: none; left: 12%; } }
+</style>
+<div class="sky" aria-hidden="true"><span class="cloud c1"></span><span class="cloud c2"></span><span class="cloud c3"></span></div> 
   <header class="topbar" id="home">
     <div class="institution-logos"><img class="msar-mark" src="msar-logo-transparent.png" alt="MSAR Maths and Stats Students Rwanda logo"></div>
     <div class="brand-title">
