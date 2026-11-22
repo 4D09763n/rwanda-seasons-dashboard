@@ -240,6 +240,41 @@
       <p class="edu-note">Educational project by MSAR · Not an official website of Meteo Rwanda, MINEMA, REMA or the World Bank</p>
     </div>
   </header>
+  <!-- CLOUD EMOJIS DRIFTING IN THE HEADER -->
+<style>
+  .topbar { position: relative; overflow: hidden; }
+  .topbar > :not(.cloud-sky) { position: relative; z-index: 1; }
+  .topbar > .cloud-sky { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .cloud-sky span { position: absolute; left: -160px; line-height: 1; opacity: .65; animation: cloudDrift linear infinite; }
+  @keyframes cloudDrift { from { transform: translateX(0); } to { transform: translateX(calc(100vw + 320px)); } }
+  @media (prefers-reduced-motion: reduce) { .cloud-sky span { animation: none; left: 15%; } }
+</style>
+<script>
+  (function () {
+    var SECONDS = 18;   // time for a cloud to cross the header: smaller = faster
+    var COUNT = 16;     // how many clouds
+
+    var header = document.querySelector(".topbar");
+    if (!header) { return; }
+    document.querySelectorAll(".sky").forEach(function (el) { el.remove(); });   // removes the earlier clouds
+
+    var sky = document.createElement("div");
+    sky.className = "cloud-sky";
+    sky.setAttribute("aria-hidden", "true");
+
+    for (var i = 0; i < COUNT; i++) {
+      var s = document.createElement("span");
+      var duration = SECONDS * (0.7 + ((i * 29) % 80) / 100);
+      s.textContent = "\u2601\uFE0F";
+      s.style.top = ((i * 37) % 78 + 2) + "%";
+      s.style.fontSize = (50 + (i * 53) % 95) + "px";
+      s.style.animationDuration = duration.toFixed(1) + "s";
+      s.style.animationDelay = "-" + (duration * ((i * 0.618) % 1)).toFixed(1) + "s";
+      sky.appendChild(s);
+    }
+    header.insertBefore(sky, header.firstChild);
+  })();
+</script>
 <!-- RAINFALL FACTS TICKER -->
 <div class="ticker" aria-label="Rainfall facts">
   <span class="ticker-label">Rainfall facts</span>
