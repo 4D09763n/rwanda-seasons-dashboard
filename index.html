@@ -698,5 +698,53 @@
     header.insertBefore(sky, header.firstChild);
   })();
 </script>
+<!-- REALISTIC DRIFTING CLOUDS IN THE HEADER -->
+<style>
+  .topbar { position: relative; overflow: hidden; }
+  .topbar > :not(.sky-drift) { position: relative; z-index: 1; }
+  .topbar > div.sky-drift { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .sky-layer { position: absolute; inset: 0; background-repeat: repeat-x; animation: skyDrift linear infinite; }
+  @keyframes skyDrift { from { background-position-x: 0; } to { background-position-x: calc(var(--tile) * -1); } }
+  .topbar .brand-title { text-shadow: 0 2px 12px rgba(8, 30, 70, .55); }
+  @media (prefers-reduced-motion: reduce) { .sky-layer { animation: none; } }
+</style>
+<script>
+  (function () {
+    var SECONDS = 120;   // time for the clouds to drift one screen: smaller = faster, bigger = slower
+
+    var header = document.querySelector(".topbar");
+    if (!header) { return; }
+    document.querySelectorAll(".sky, .cloud-sky, .puff-sky, .sky-drift").forEach(function (el) { el.remove(); });   // removes earlier clouds
+
+    function tile(seed, freq, octaves, gain, offset) {
+      var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400">' +
+        '<filter id="c" x="0" y="0" width="100%" height="100%">' +
+        '<feTurbulence type="fractalNoise" baseFrequency="' + freq + '" numOctaves="' + octaves + '" seed="' + seed + '" stitchTiles="stitch"/>' +
+        '<feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 ' + gain + ' ' + offset + '"/></filter>' +
+        '<rect width="100%" height="100%" filter="url(#c)"/></svg>';
+      return 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")';
+    }
+
+    var layers = [
+      { seed: 11, freq: "0.007 0.011", oct: 6, gain: 2.6, off: -1.02, w: 700,  speed: 1.6, op: 0.5 },    // far, faster, softer
+      { seed: 4,  freq: "0.0045 0.008", oct: 6, gain: 2.8, off: -1.2,  w: 1300, speed: 1.0, op: 0.75 }    // near, slower, bigger
+    ];
+
+    var sky = document.createElement("div");
+    sky.className = "sky-drift";
+    sky.setAttribute("aria-hidden", "true");
+    layers.forEach(function (L) {
+      var d = document.createElement("div");
+      d.className = "sky-layer";
+      d.style.backgroundImage = tile(L.seed, L.freq, L.oct, L.gain, L.off);
+      d.style.backgroundSize = L.w + "px 100%";
+      d.style.setProperty("--tile", L.w + "px");
+      d.style.opacity = L.op;
+      d.style.animationDuration = (SECONDS / L.speed) + "s";
+      sky.appendChild(d);
+    });
+    header.insertBefore(sky, header.firstChild);
+  })();
+</script>
 </body>
 </html>
