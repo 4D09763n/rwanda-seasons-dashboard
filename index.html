@@ -746,5 +746,16 @@
     header.insertBefore(sky, header.firstChild);
   })();
 </script>
+<!-- CLOUD SPEED -->
+<script>
+  (function () {
+    var SPEED = 80;   // cloud speed in pixels per second: bigger = faster (try 40, 80, 120, 200)
+    document.querySelectorAll(".sky-layer").forEach(function (layer, i) {
+      var tile = parseFloat(layer.style.getPropertyValue("--tile")) || 1000;
+      var speed = SPEED * (i === 0 ? 1.5 : 1);                  // the far layer moves a bit faster
+      layer.style.animationDuration = (tile / speed).toFixed(1) + "s";
+    });
+  })();
+</script>
 </body>
 </html>
